@@ -16,9 +16,11 @@ type Config = { next: { revalidate: number } } | { cache: 'no-store' } | { cache
 
 class Request {
   baseURL: string;
+  defaultTimeout: number; // 添加默认超时时间属性
 
-  constructor(baseURL: string) {
+  constructor(baseURL: string, defaultTimeout: number = 5000) {
     this.baseURL = baseURL;
+    this.defaultTimeout = defaultTimeout; // 初始化默认超时时间
   }
 
   /**
@@ -60,6 +62,10 @@ class Request {
       }
     }
 
+    // 创建一个 AbortController 用于超时取消请求
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(), this.defaultTimeout);
+
     return {
       url,
       options: {
@@ -67,6 +73,7 @@ class Request {
         headers,
         mode, // 添加 mode 属性
         body: method !== 'GET' && method !== 'DELETE' ? requestPayload : undefined,
+        signal: controller.signal, // 添加 signal 属性
         ...config,
       },
     };
@@ -143,14 +150,15 @@ class Request {
   }
 }
 
-const request = new Request(process.env.NEXT_PUBLIC_API_URL as string);
+const request = new Request(process.env.EXPO_PUBLIC_API_URL as string);
 
 export default request;
 
 export interface ApiResponse<T> {
   data: T;
   message: string;
-  reason: string;
+  code: number;
+  timestamp: number;
 }
 
 export const handleRequest = async <T>(requestFn: () => Promise<T>): Promise<T> => {

@@ -1,12 +1,18 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
 import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
+import { useNavigation } from '@react-navigation/native';
 import tw from 'twrnc';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
 
-const Page = () => {
+import { EmailLoginResponseTypes, LoginByEmail, sendEmailVerification } from '@/services';
+import { getDataFromAsyncStorage, LocalStorageEnum } from '@/utils';
+
+const Page: React.FC = () => {
   const navigation = useNavigation();
+  const router = useRouter();
 
-  const [email, setEmail] = useState('');
+  const [email, setEmail] = useState<string>('2042204285@qq.com');
   const [verificationCode, setVerificationCode] = useState('');
   const [isCounting, setIsCounting] = useState(false);
   const [timer, setTimer] = useState(60);
@@ -16,6 +22,26 @@ const Page = () => {
       headerShown: false,
     });
   }, [navigation]);
+
+  useEffect(() => {
+    const fetchLoginResponse = async () => {
+      const response = await getDataFromAsyncStorage<EmailLoginResponseTypes>(
+        LocalStorageEnum.USER_AUTH,
+        {
+          access_token: '',
+          refresh_token: '',
+          expiresIn: '',
+        },
+      );
+      console.log(response);
+
+      if (response.access_token) {
+        router.replace('/');
+      }
+    };
+
+    fetchLoginResponse();
+  }, []);
 
   useEffect(() => {
     let interval: NodeJS.Timeout | null = null;
@@ -34,19 +60,36 @@ const Page = () => {
     };
   }, [isCounting, timer]);
 
-  const sendVerificationCode = () => {
-    // 发送验证码逻辑
-    Alert.alert('验证码已发送到您的邮箱');
-    setIsCounting(true);
+  const sendVerificationCode = async () => {
+    try {
+      const data = await sendEmailVerification({ account: email });
+      if (data.code === 200) {
+        setIsCounting(true);
+      } else {
+        console.log('验证码发送失败');
+      }
+    } catch (error) {
+      Alert.alert('发送验证码时出错，请重试。');
+      console.error(error);
+    }
   };
 
-  const login = () => {
-    // 登录逻辑
-    if (verificationCode === '123456') {
-      // 假设123456是正确的验证码
-      Alert.alert('登录成功');
-    } else {
-      Alert.alert('验证码错误');
+  const login = async () => {
+    try {
+      const data = await LoginByEmail({ email: email, captcha: verificationCode });
+
+      if (data.code === 200) {
+        Alert.alert('登录成功');
+        console.log(data.data);
+
+        await AsyncStorage.setItem(LocalStorageEnum.USER_AUTH, JSON.stringify(data.data));
+        router.replace('/'); // 登录成功后重定向到首页或其他页面
+      } else {
+        Alert.alert('验证码错误，请重试。');
+      }
+    } catch (error) {
+      Alert.alert('验证验证码时出错，请重试。');
+      console.error(error);
     }
   };
 
