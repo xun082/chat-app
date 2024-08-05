@@ -10,6 +10,7 @@ const useAuth = () => {
     const checkToken = async () => {
       try {
         const userToken = await AsyncStorage.getItem('userToken');
+
         if (userToken) {
           setIsAuthenticated(true);
         } else {

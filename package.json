@@ -69,7 +69,8 @@
   "private": true,
   "lint-staged": {
     "*.{js,ts,jsx,tsx}": [
-      "pnpm format"
+      "pnpm format",
+      "pnpm lint"
     ]
   },
   "config": {

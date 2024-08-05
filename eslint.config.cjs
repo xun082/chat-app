@@ -7,7 +7,7 @@ const { resolve } = require('path');
 
 module.exports = [
   {
-    ignores: ['node_modules/**'],
+    ignores: ['node_modules/**', 'scripts/reset-project.js'],
   },
   {
     files: ['**/*.{js,jsx,ts,tsx}'],
@@ -65,6 +65,9 @@ module.exports = [
       'react-native/no-color-literals': 'warn',
       'react-native/no-raw-text': 'warn',
       'react-native/no-single-element-style-arrays': 'warn',
+      'react-native/no-unused-styles': 'off',
+      'react-native/no-inline-styles': 'off',
+      'react-native/no-color-literals': 'off',
     },
     settings: {
       react: {

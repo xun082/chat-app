@@ -4,9 +4,9 @@ import { useFonts } from 'expo-font';
 import { Stack, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from 'react';
+
 import 'react-native-reanimated';
 import useAuth from '@/hooks/useAuth';
-
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { getDataFromAsyncStorage, LocalStorageEnum } from '@/utils';
 import { EmailLoginResponseTypes } from '@/services';

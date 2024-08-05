@@ -63,6 +63,7 @@ const Page: React.FC = () => {
   const sendVerificationCode = async () => {
     try {
       const data = await sendEmailVerification({ account: email });
+
       if (data.code === 200) {
         setIsCounting(true);
       } else {

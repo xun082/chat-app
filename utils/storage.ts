@@ -21,6 +21,7 @@ export const getDataFromAsyncStorage = async <T>(key: string, defaultValue: T): 
     }
   } catch (error) {
     console.error(`从 AsyncStorage 获取数据时出错: ${error}`);
+
     return defaultValue;
   }
 };
