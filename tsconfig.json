@@ -13,6 +13,7 @@
     ".expo/types/**/*.ts",
     "expo-env.d.ts",
     "eslint.config.cjs",
-    "babel.config.js"
+    "babel.config.js",
+    "tailwind.config.js"
   ]
 }

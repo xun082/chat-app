@@ -1,23 +1,21 @@
-import React from 'react';
-import { DarkTheme, DefaultTheme, ThemeProvider } from '@react-navigation/native';
-import { useFonts } from 'expo-font';
+// RootLayout.tsx
+import React, { useEffect } from 'react';
 import { Stack, useRouter } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useEffect } from 'react';
-
+import { useFonts } from 'expo-font';
 import 'react-native-reanimated';
+
 import useAuth from '@/hooks/useAuth';
-import { useColorScheme } from '@/hooks/useColorScheme';
 import { getDataFromAsyncStorage, LocalStorageEnum } from '@/utils';
 import { EmailLoginResponseTypes } from '@/services';
+import { ThemeProvider } from '@/context/ThemeContext';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
-  const isAuthenticated = useAuth();
-  const router = useRouter();
+  // const isAuthenticated = useAuth();
+  // const router = useRouter();
 
-  const colorScheme = useColorScheme();
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
   });
@@ -28,31 +26,31 @@ export default function RootLayout() {
     }
   }, [loaded]);
 
-  useEffect(() => {
-    const fetchLoginResponse = async () => {
-      const response = await getDataFromAsyncStorage<EmailLoginResponseTypes>(
-        LocalStorageEnum.USER_AUTH,
-        {
-          access_token: '',
-          refresh_token: '',
-          expiresIn: '',
-        },
-      );
+  // useEffect(() => {
+  //   const fetchLoginResponse = async () => {
+  //     const response = await getDataFromAsyncStorage<EmailLoginResponseTypes>(
+  //       LocalStorageEnum.USER_AUTH,
+  //       {
+  //         access_token: '',
+  //         refresh_token: '',
+  //         expiresIn: '',
+  //       },
+  //     );
 
-      if (response.access_token) {
-        router.replace('/');
-      }
-    };
+  //     if (response.access_token) {
+  //       router.replace('/');
+  //     }
+  //   };
 
-    fetchLoginResponse();
-  }, []);
+  //   fetchLoginResponse();
+  // }, []);
 
-  if (!loaded || isAuthenticated === null) {
-    return null;
-  }
+  // if (!loaded || isAuthenticated === null) {
+  //   return null;
+  // }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    <ThemeProvider>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="+not-found" />
