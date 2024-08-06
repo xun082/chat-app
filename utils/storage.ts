@@ -2,6 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export enum LocalStorageEnum {
   USER_AUTH = 'USER_AUTH',
+  APP_THEME = 'APP_THEME',
 }
 
 /**
