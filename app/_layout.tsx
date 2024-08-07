@@ -14,7 +14,6 @@ SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   // const isAuthenticated = useAuth();
-  // const router = useRouter();
 
   const [loaded] = useFonts({
     SpaceMono: require('../assets/fonts/SpaceMono-Regular.ttf'),
@@ -28,18 +27,11 @@ export default function RootLayout() {
 
   // useEffect(() => {
   //   const fetchLoginResponse = async () => {
-  //     const response = await getDataFromAsyncStorage<EmailLoginResponseTypes>(
-  //       LocalStorageEnum.USER_AUTH,
-  //       {
-  //         access_token: '',
-  //         refresh_token: '',
-  //         expiresIn: '',
-  //       },
-  //     );
-
-  //     if (response.access_token) {
-  //       router.replace('/');
-  //     }
+  //     await getDataFromAsyncStorage<EmailLoginResponseTypes>(LocalStorageEnum.USER_AUTH, {
+  //       access_token: '',
+  //       refresh_token: '',
+  //       expiresIn: '',
+  //     });
   //   };
 
   //   fetchLoginResponse();

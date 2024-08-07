@@ -1,5 +1,5 @@
 import React from 'react';
-import { SafeAreaView, View, Text, StatusBar, Switch, TouchableOpacity } from 'react-native';
+import { SafeAreaView, View, Text, Switch, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import tw from 'twrnc';
 
