@@ -15,7 +15,14 @@ interface ThemeContextType {
   isDarkMode: boolean;
   toggleTheme: () => void;
   theme: typeof NavigationDarkTheme | typeof NavigationDefaultTheme;
-  colors: { background: string; text: string; border: string };
+  colors: {
+    background: string;
+    text: string;
+    border: string;
+    inputBackground: string;
+    inputText: string;
+    placeholder: string;
+  };
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);

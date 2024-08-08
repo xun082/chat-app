@@ -1,14 +1,5 @@
 import React from 'react';
-import {
-  SafeAreaView,
-  View,
-  Text,
-  Button,
-  StatusBar,
-  Image,
-  ScrollView,
-  TouchableOpacity,
-} from 'react-native';
+import { SafeAreaView, View, Text, Pressable, StatusBar, Image, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import tw from '@/tailwind';
@@ -37,13 +28,13 @@ const MenuItem: React.FC<{ title: string; onPress?: () => void }> = ({ title, on
   const { colors } = useTheme();
 
   return (
-    <TouchableOpacity onPress={onPress}>
+    <Pressable onPress={onPress}>
       <View
         style={tw`flex flex-row items-center p-4 border-b border-gray-300 dark:border-gray-700`}
       >
         <Text style={[tw`text-lg`, { color: colors.text }]}>{title}</Text>
       </View>
-    </TouchableOpacity>
+    </Pressable>
   );
 };
 
@@ -64,7 +55,9 @@ const MainPage: React.FC = () => {
         <MenuItem title="表情" />
         <MenuItem title="设置" onPress={() => router.push('/setting')} />
       </ScrollView>
-      <Button title="切换主题" onPress={toggleTheme} />
+      <Pressable style={tw`m-4 p-4 bg-blue-500 rounded-lg items-center`} onPress={toggleTheme}>
+        <Text style={tw`text-white`}>切换主题</Text>
+      </Pressable>
     </SafeAreaView>
   );
 };
