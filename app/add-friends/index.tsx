@@ -1,4 +1,4 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import {
   Text,
   View,
@@ -12,6 +12,7 @@ import { useNavigation } from '@react-navigation/native';
 import tw from 'twrnc';
 
 import { useTheme } from '@/context/ThemeContext';
+import FullScreenModal from '@/components/model/search-model';
 
 const menuItems = [
   {
@@ -46,9 +47,10 @@ const menuItems = [
   },
 ];
 
-const AddFriends = () => {
+const AddFriends: React.FC = () => {
   const navigation = useNavigation();
   const { colors } = useTheme();
+  const [isModalVisible, setModalVisible] = useState(false);
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -66,20 +68,36 @@ const AddFriends = () => {
     });
   }, [navigation, colors]);
 
+  const toggleModal = () => {
+    if (isModalVisible) {
+      setTimeout(() => {
+        setModalVisible(false);
+      }, 300);
+    } else {
+      setModalVisible(true);
+    }
+  };
+
   return (
     <KeyboardAvoidingView
       style={[tw`flex-1`, { backgroundColor: colors.background }]}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <View style={tw`px-4 py-2`}>
-        <TextInput
-          style={[
-            tw`px-4 py-2 rounded-lg`,
-            { backgroundColor: colors.inputBackground, color: colors.inputText },
-          ]}
-          placeholder="账号/手机号"
-          placeholderTextColor={colors.placeholder}
-        />
+        <Pressable onPress={toggleModal}>
+          <View pointerEvents="none">
+            <TextInput
+              style={[
+                tw`px-4 py-2 rounded-lg`,
+                { backgroundColor: colors.inputBackground, color: colors.inputText },
+              ]}
+              placeholder="账号/手机号"
+              placeholderTextColor={colors.placeholder}
+              value=""
+              editable={false} // 禁止直接编辑
+            />
+          </View>
+        </Pressable>
         <View style={tw`flex-row items-center mt-2`}>
           <Text style={[tw`text-base`, { color: colors.placeholder }]}>我的微信号：yunmz777</Text>
           <Image
@@ -110,6 +128,7 @@ const AddFriends = () => {
           </Pressable>
         ))}
       </View>
+      <FullScreenModal isVisible={isModalVisible} onClose={toggleModal} />
     </KeyboardAvoidingView>
   );
 };
