@@ -5,7 +5,7 @@ interface SearchUserByEmailTypes {
 }
 
 export interface UserResponseTypes {
-  id: string;
+  _id: string;
   githubId: number;
   avatar: string;
   createdAt: number;

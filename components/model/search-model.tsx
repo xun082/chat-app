@@ -11,8 +11,10 @@ import {
   Image,
 } from 'react-native';
 import tw from 'twrnc';
+import { Link } from 'expo-router';
 
 import { searchUserByEmail } from '@/services';
+import { useSearchStore } from '@/store/useSearchStore';
 
 interface FullScreenModalProps {
   isVisible: boolean;
@@ -21,22 +23,24 @@ interface FullScreenModalProps {
 
 const FullScreenModal: React.FC<FullScreenModalProps> = ({ isVisible, onClose }) => {
   const [search, setSearch] = useState<string>('2042204285@qq.com');
-  const [searchResults, setSearchResults] = useState<any[]>([]);
+  const { searchResult, setSearchResult, clearSearchResult } = useSearchStore();
 
   const handleOnClose = () => {
     setSearch('');
-    setSearchResults([]); // 清空搜索结果
     onClose();
   };
 
   const handleSearchSubmit = async () => {
-    const response = await searchUserByEmail({ email: search });
-    const data = response.data;
+    try {
+      const response = await searchUserByEmail({ email: search });
+      const data = response.data;
 
-    if (data) {
-      setSearchResults([data]); // 假设 API 返回单个用户对象，将其包装在数组中
-    } else {
-      setSearchResults([]);
+      if (data) {
+        setSearchResult(data);
+      }
+    } catch (error) {
+      console.error('Error searching user:', error);
+      clearSearchResult();
     }
   };
 
@@ -68,16 +72,30 @@ const FullScreenModal: React.FC<FullScreenModalProps> = ({ isVisible, onClose })
             </Pressable>
           </View>
           <ScrollView style={tw`p-4`}>
-            {searchResults.map((user, index) => (
-              <View key={index} style={tw`mb-4 p-4 bg-gray-800 rounded-lg`}>
-                <Text style={tw`text-white mb-2`}>用户名: {user.username}</Text>
-                <Text style={tw`text-white mb-2`}>邮箱: {user.email}</Text>
-                <Text style={tw`text-white mb-2`}>
-                  创建时间: {new Date(user.createdAt * 1000).toLocaleString()}
-                </Text>
-                <Image source={{ uri: user.avatar as string }} style={tw`w-16 h-16 rounded-full`} />
-              </View>
-            ))}
+            {searchResult ? (
+              <Pressable onPress={handleOnClose}>
+                <Link
+                  href={{
+                    pathname: '/(home)/user/[id]',
+                    params: { id: searchResult._id },
+                  }}
+                >
+                  <View style={tw`mb-4 p-4 bg-gray-800 rounded-lg`}>
+                    <Text style={tw`text-white mb-2`}>用户名: {searchResult.username}</Text>
+                    <Text style={tw`text-white mb-2`}>邮箱: {searchResult.email}</Text>
+                    <Text style={tw`text-white mb-2`}>
+                      创建时间: {new Date(searchResult.createdAt * 1000).toLocaleString()}
+                    </Text>
+                    <Image
+                      source={{ uri: searchResult.avatar }}
+                      style={tw`w-16 h-16 rounded-full`}
+                    />
+                  </View>
+                </Link>
+              </Pressable>
+            ) : (
+              <Text style={tw`text-white text-center`}>没有找到匹配的用户</Text>
+            )}
           </ScrollView>
         </View>
       </KeyboardAvoidingView>

@@ -94,7 +94,7 @@ const AddFriends: React.FC = () => {
               placeholder="账号/手机号"
               placeholderTextColor={colors.placeholder}
               value=""
-              editable={false} // 禁止直接编辑
+              readOnly={true}
             />
           </View>
         </Pressable>
