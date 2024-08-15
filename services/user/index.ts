@@ -39,8 +39,10 @@ export const searchUserByEmail = async (
   );
 };
 
-export const getUserInfo = async (): Promise<ApiResponse<UserResponseTypes>> => {
-  return handleRequest(() => request.get<ApiResponse<UserResponseTypes>>('/user'));
+export const getUserInfo = async (userId?: string): Promise<ApiResponse<UserResponseTypes>> => {
+  const url = userId ? `/user?userId=${userId}` : '/user';
+
+  return handleRequest(() => request.get<ApiResponse<UserResponseTypes>>(url));
 };
 
 export const getFriendsList = async (): Promise<ApiResponse<Array<Friend>>> => {

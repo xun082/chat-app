@@ -14,7 +14,7 @@ import tw from 'twrnc';
 import { Link } from 'expo-router';
 
 import { searchUserByEmail } from '@/services';
-import { useSearchStore } from '@/store/useSearchStore';
+import { useSearchStore } from '@/stores/useSearchStore';
 
 interface FullScreenModalProps {
   isVisible: boolean;
@@ -76,7 +76,7 @@ const FullScreenModal: React.FC<FullScreenModalProps> = ({ isVisible, onClose })
               <Pressable onPress={handleOnClose}>
                 <Link
                   href={{
-                    pathname: '/(home)/user/[id]',
+                    pathname: '/(home)/contact/[id]',
                     params: { id: searchResult._id },
                   }}
                 >
@@ -84,7 +84,7 @@ const FullScreenModal: React.FC<FullScreenModalProps> = ({ isVisible, onClose })
                     <Text style={tw`text-white mb-2`}>用户名: {searchResult.username}</Text>
                     <Text style={tw`text-white mb-2`}>邮箱: {searchResult.email}</Text>
                     <Text style={tw`text-white mb-2`}>
-                      创建时间: {new Date(searchResult.createdAt * 1000).toLocaleString()}
+                      创建时间: {new Date(parseInt(searchResult.createdAt) * 1000).toLocaleString()}
                     </Text>
                     <Image
                       source={{ uri: searchResult.avatar }}

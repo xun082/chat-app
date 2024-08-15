@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { SafeAreaView, View, Text, Pressable, Image, ScrollView } from 'react-native';
-import { useRouter } from 'expo-router';
+import { useRouter, Link } from 'expo-router';
 
 import tw from '@/tailwind';
 import { useTheme } from '@/context/ThemeContext';
-import { getUserInfo, UserResponseTypes } from '@/services';
+import { getUserInfo } from '@/services';
+import { useUserStore } from '@/stores/userStore';
 
 const ProfileHeader: React.FC = () => {
   const { colors } = useTheme();
-  const [user, setUser] = useState<UserResponseTypes>({} as UserResponseTypes);
+  const { user, setUser } = useUserStore();
 
   useEffect(() => {
     async function fetchUserInfo() {
@@ -17,23 +18,25 @@ const ProfileHeader: React.FC = () => {
     }
 
     fetchUserInfo();
-  }, []);
+  }, [setUser]);
 
   return (
-    <View style={tw`flex flex-row items-center p-4`}>
-      <Image
-        source={{
-          uri:
-            user.avatar ||
-            'https://cdn.pixabay.com/photo/2024/07/17/08/53/sunrise-8901014_1280.jpg',
-        }}
-        style={tw`w-16 h-16 rounded-full`}
-      />
-      <View style={tw`ml-4`}>
-        <Text style={[tw`text-xl`, { color: colors.text }]}>{user.username}</Text>
-        <Text style={[tw`text-sm`, { color: colors.text }]}>邮箱号：{user.email}</Text>
+    <Link href="/profile">
+      <View style={tw`flex flex-row items-center p-4`}>
+        <Image
+          source={{
+            uri:
+              user.avatar ||
+              'https://cdn.pixabay.com/photo/2024/07/17/08/53/sunrise-8901014_1280.jpg',
+          }}
+          style={tw`w-16 h-16 rounded-full`}
+        />
+        <View style={tw`ml-4`}>
+          <Text style={[tw`text-xl`, { color: colors.text }]}>{user.username}</Text>
+          <Text style={[tw`text-sm`, { color: colors.text }]}>邮箱号：{user.email}</Text>
+        </View>
       </View>
-    </View>
+    </Link>
   );
 };
 
