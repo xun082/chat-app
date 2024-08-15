@@ -1,16 +1,19 @@
-import React, { useLayoutEffect } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { View, Text, Image, Pressable } from 'react-native';
 import tw from 'twrnc';
 import { useNavigation } from '@react-navigation/native';
 import { useLocalSearchParams, Link } from 'expo-router';
 
 import { useTheme } from '@/context/ThemeContext';
-import { useSearchStore } from '@/store/useSearchStore';
-import { UserResponseTypes } from '@/services';
+import { useSearchStore } from '@/stores/useSearchStore';
+import { getUserInfo, UserResponseTypes } from '@/services';
 
-const UserId = () => {
+const ContactUserInfo = () => {
   const { id } = useLocalSearchParams();
-  const searchResult = useSearchStore((state) => state.searchResult) as UserResponseTypes;
+  const searchResult = useSearchStore((state) => state.searchResult) as
+    | UserResponseTypes
+    | undefined;
+  const [user, setUser] = useState<UserResponseTypes | null>(searchResult || null);
   const navigation = useNavigation();
   const { colors } = useTheme();
 
@@ -22,16 +25,36 @@ const UserId = () => {
         </View>
       ),
       headerStyle: {
-        backgroundColor: colors.background, // 设置导航栏背景色为主题背景色
+        backgroundColor: colors.background,
         borderBottomWidth: 1,
-        borderBottomColor: colors.border, // 设置底部边框颜色为主题边框色
+        borderBottomColor: colors.border,
       },
       headerTitleAlign: 'center',
-      headerTintColor: colors.text, // 设置导航栏按钮颜色为主题文本色
+      headerTintColor: colors.text,
     });
   }, [navigation, colors]);
 
-  if (!searchResult) {
+  useEffect(() => {
+    // 如果从搜索跳转，则直接使用 searchResult，不需要发起请求
+    // 如果从用户列表跳转，则 searchResult 为空，需要发起网络请求
+    if (!searchResult && id) {
+      async function fetchUserInfo() {
+        try {
+          const data = await getUserInfo(id as string);
+          setUser(data.data);
+        } catch (error) {
+          console.error('获取用户信息失败:', error);
+          setUser(null);
+        }
+      }
+
+      fetchUserInfo();
+    } else if (searchResult) {
+      setUser(searchResult);
+    }
+  }, [id, searchResult]);
+
+  if (!user) {
     return (
       <View
         style={[tw`flex-1 justify-center items-center`, { backgroundColor: colors.background }]}
@@ -45,15 +68,13 @@ const UserId = () => {
     <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       <View style={tw`flex-row p-4 items-center`}>
         <Image
-          source={{ uri: searchResult.avatar || 'https://example.com/avatar.jpg' }}
+          source={{ uri: user.avatar || 'https://example.com/avatar.jpg' }}
           style={tw`w-16 h-16 rounded-full`}
         />
         <View style={tw`ml-4`}>
-          <Text style={[tw`text-xl font-bold`, { color: colors.text }]}>
-            {searchResult.username}
-          </Text>
+          <Text style={[tw`text-xl font-bold`, { color: colors.text }]}>{user.username}</Text>
           <Text style={[tw`text-sm`, { color: colors.placeholder }]}>
-            群昵称: {searchResult.username || 'Genie Timer'}
+            群昵称: {user.username || 'Genie Timer'}
           </Text>
           <Text style={[tw`text-sm`, { color: colors.placeholder }]}>地区: {'未知'}</Text>
         </View>
@@ -89,4 +110,4 @@ const UserId = () => {
   );
 };
 
-export default UserId;
+export default ContactUserInfo;

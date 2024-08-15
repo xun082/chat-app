@@ -3,6 +3,7 @@ import { View, Text, Image, ScrollView, Pressable } from 'react-native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import tw from 'twrnc';
 import { useNavigation } from '@react-navigation/native';
+import { useRouter } from 'expo-router'; // 使用useRouter来进行页面跳转
 
 import DropdownMenu from '@/components/menu/DropdownMenu';
 import { useTheme } from '@/context/ThemeContext';
@@ -11,6 +12,7 @@ import { Friend, getFriendsList } from '@/services';
 export default function ContactsScreen() {
   const { colors } = useTheme();
   const navigation = useNavigation();
+  const router = useRouter(); // 获取路由对象
   const [menuVisible, setMenuVisible] = useState<boolean>(false);
   const [friends, setFriends] = useState<Array<Friend>>([]);
 
@@ -105,15 +107,25 @@ export default function ContactsScreen() {
             <Text style={[tw`mb-2`, { color: colors.placeholder }]}>
               {friend.friendUsername.charAt(0).toUpperCase()}
             </Text>
-            <View
-              style={[
-                tw`flex-row items-center p-4 rounded mb-2`,
-                { backgroundColor: colors.inputBackground },
-              ]}
+            <Pressable
+              onPress={() =>
+                router.push({
+                  pathname: '/(home)/contact/[id]',
+                  params: { id: friend.friendId },
+                })
+              }
+              style={tw`w-full`}
             >
-              <Image source={{ uri: friend.avatar }} style={tw`w-10 h-10 rounded-full`} />
-              <Text style={[tw`ml-4`, { color: colors.text }]}>{friend.friendRemark}</Text>
-            </View>
+              <View
+                style={[
+                  tw`flex-row items-center p-4 rounded mb-2`,
+                  { backgroundColor: colors.inputBackground },
+                ]}
+              >
+                <Image source={{ uri: friend.avatar }} style={tw`w-10 h-10 rounded-full`} />
+                <Text style={[tw`ml-4`, { color: colors.text }]}>{friend.friendRemark}</Text>
+              </View>
+            </Pressable>
           </View>
         ))}
       </View>
