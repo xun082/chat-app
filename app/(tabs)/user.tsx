@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View, Text, Pressable, StatusBar, Image, ScrollView } from 'react-native';
+import { SafeAreaView, View, Text, Pressable, Image, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import tw from '@/tailwind';
