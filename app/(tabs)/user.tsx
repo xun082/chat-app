@@ -1,24 +1,37 @@
-import React from 'react';
-import { SafeAreaView, View, Text, Pressable, StatusBar, Image, ScrollView } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, View, Text, Pressable, Image, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
 
 import tw from '@/tailwind';
 import { useTheme } from '@/context/ThemeContext';
+import { getUserInfo, UserResponseTypes } from '@/services';
 
 const ProfileHeader: React.FC = () => {
   const { colors } = useTheme();
+  const [user, setUser] = useState<UserResponseTypes>({} as UserResponseTypes);
+
+  useEffect(() => {
+    async function fetchUserInfo() {
+      const data = await getUserInfo();
+      setUser(data.data);
+    }
+
+    fetchUserInfo();
+  }, []);
 
   return (
     <View style={tw`flex flex-row items-center p-4`}>
       <Image
         source={{
-          uri: 'https://cdn.pixabay.com/photo/2024/07/17/08/53/sunrise-8901014_1280.jpg',
+          uri:
+            user.avatar ||
+            'https://cdn.pixabay.com/photo/2024/07/17/08/53/sunrise-8901014_1280.jpg',
         }}
         style={tw`w-16 h-16 rounded-full`}
       />
       <View style={tw`ml-4`}>
-        <Text style={[tw`text-xl`, { color: colors.text }]}>moment</Text>
-        <Text style={[tw`text-sm`, { color: colors.text }]}>微信号：moment_082</Text>
+        <Text style={[tw`text-xl`, { color: colors.text }]}>{user.username}</Text>
+        <Text style={[tw`text-sm`, { color: colors.text }]}>邮箱号：{user.email}</Text>
       </View>
     </View>
   );
@@ -39,12 +52,11 @@ const MenuItem: React.FC<{ title: string; onPress?: () => void }> = ({ title, on
 };
 
 const MainPage: React.FC = () => {
-  const { isDarkMode, toggleTheme, colors } = useTheme();
+  const { toggleTheme, colors } = useTheme();
   const router = useRouter();
 
   return (
     <SafeAreaView style={[tw`flex-1`, { backgroundColor: colors.background }]}>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
       <ScrollView>
         <ProfileHeader />
         <MenuItem title="服务" />
