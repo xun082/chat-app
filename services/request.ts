@@ -1,3 +1,5 @@
+import { getDataFromAsyncStorage, LocalStorageEnum } from '@/utils';
+
 type Method = 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
 
 interface Params {
@@ -9,10 +11,15 @@ interface Props extends Params {
   url: string;
   method: Method;
   mode?: RequestMode; // 添加 mode 属性
-  token?: string; // 添加 token 属性
 }
 
 type Config = { next: { revalidate: number } } | { cache: 'no-store' } | { cache: 'force-cache' };
+
+interface AuthToken {
+  access_token: string;
+  refresh_token: string;
+  expiresIn: number;
+}
 
 class Request {
   baseURL: string;
@@ -26,15 +33,19 @@ class Request {
   /**
    * 请求拦截器
    */
-  interceptorsRequest({ url, method, params, cacheTime, mode, token }: Props) {
+  async interceptorsRequest({ url, method, params, cacheTime, mode }: Props) {
     let queryParams = ''; // url参数
     let requestPayload = ''; // 请求体数据
 
     // 请求头
     const headers: Record<string, string> = {};
 
-    if (token) {
-      headers['Authorization'] = `Bearer ${token}`;
+    // 从缓存中获取 token
+    const authToken = await getDataFromAsyncStorage<AuthToken | null>(LocalStorageEnum.USER_AUTH);
+
+    // 只有在 authToken 存在时才添加 Authorization 头
+    if (authToken?.access_token) {
+      headers['Authorization'] = `Bearer ${authToken.access_token}`;
     }
 
     const config: Config =
@@ -104,14 +115,13 @@ class Request {
     });
   }
 
-  async httpFactory<T>({ url = '', params = {}, method, mode, token }: Props): Promise<T> {
-    const req = this.interceptorsRequest({
+  async httpFactory<T>({ url = '', params = {}, method, mode }: Props): Promise<T> {
+    const req = await this.interceptorsRequest({
       url: this.baseURL + url,
       method,
       params: params.params,
       cacheTime: params.cacheTime,
       mode,
-      token,
     });
 
     const res = await fetch(req.url, req.options);
@@ -119,34 +129,28 @@ class Request {
     return this.interceptorsResponse<T>(res);
   }
 
-  async request<T>(
-    method: Method,
-    url: string,
-    params?: Params,
-    mode?: RequestMode,
-    token?: string,
-  ): Promise<T> {
-    return this.httpFactory<T>({ url, params, method, mode, token });
+  async request<T>(method: Method, url: string, params?: Params, mode?: RequestMode): Promise<T> {
+    return this.httpFactory<T>({ url, params, method, mode });
   }
 
-  get<T>(url: string, params?: Params, mode?: RequestMode, token?: string): Promise<T> {
-    return this.request('GET', url, params, mode, token);
+  get<T>(url: string, params?: Params, mode?: RequestMode): Promise<T> {
+    return this.request('GET', url, params, mode);
   }
 
-  post<T>(url: string, params?: Params, mode?: RequestMode, token?: string): Promise<T> {
-    return this.request('POST', url, params, mode, token);
+  post<T>(url: string, params?: Params, mode?: RequestMode): Promise<T> {
+    return this.request('POST', url, params, mode);
   }
 
-  put<T>(url: string, params?: Params, mode?: RequestMode, token?: string): Promise<T> {
-    return this.request('PUT', url, params, mode, token);
+  put<T>(url: string, params?: Params, mode?: RequestMode): Promise<T> {
+    return this.request('PUT', url, params, mode);
   }
 
-  delete<T>(url: string, params?: Params, mode?: RequestMode, token?: string): Promise<T> {
-    return this.request('DELETE', url, params, mode, token);
+  delete<T>(url: string, params?: Params, mode?: RequestMode): Promise<T> {
+    return this.request('DELETE', url, params, mode);
   }
 
-  patch<T>(url: string, params?: Params, mode?: RequestMode, token?: string): Promise<T> {
-    return this.request('PATCH', url, params, mode, token);
+  patch<T>(url: string, params?: Params, mode?: RequestMode): Promise<T> {
+    return this.request('PATCH', url, params, mode);
   }
 }
 

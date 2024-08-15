@@ -8,10 +8,13 @@ export enum LocalStorageEnum {
 /**
  * 从 AsyncStorage 获取数据
  * @param {string} key - 要获取数据的键名
- * @param {T} defaultValue - 如果没有找到数据，返回的默认值
- * @returns {Promise<T>} - 返回一个 Promise，解析为获取到的数据或默认值
+ * @param {T} [defaultValue] - 如果没有找到数据，返回的默认值
+ * @returns {Promise<T | undefined>} - 返回一个 Promise，解析为获取到的数据或默认值
  */
-export const getDataFromAsyncStorage = async <T>(key: string, defaultValue: T): Promise<T> => {
+export const getDataFromAsyncStorage = async <T>(
+  key: string,
+  defaultValue?: T,
+): Promise<T | undefined> => {
   try {
     const value = await AsyncStorage.getItem(key);
 
