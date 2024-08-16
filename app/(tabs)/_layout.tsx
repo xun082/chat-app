@@ -30,11 +30,11 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="dynamic"
+        name="discover"
         options={{
-          title: '动态',
+          title: '发现',
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'person' : 'person-outline'} color={color} />
+            <TabBarIcon name={focused ? 'compass' : 'compass-outline'} color={color} />
           ),
         }}
       />

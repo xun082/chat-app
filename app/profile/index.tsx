@@ -33,7 +33,9 @@ const ContactUserInfo = () => {
 
   const pickImage = async () => {
     // 请求访问图片库的权限
-    let permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+
+    console.log(permissionResult);
 
     if (permissionResult.granted === false) {
       Alert.alert('Permission to access camera roll is required!');
@@ -41,11 +43,13 @@ const ContactUserInfo = () => {
       return;
     }
 
-    let pickerResult = await ImagePicker.launchImageLibraryAsync({
+    const pickerResult = await ImagePicker.launchImageLibraryAsync({
       allowsEditing: true,
       aspect: [1, 1],
       quality: 1,
     });
+
+    console.log(pickerResult);
 
     if (!pickerResult.canceled) {
       setSelectedImage(pickerResult.assets[0].uri);
