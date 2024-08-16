@@ -1,9 +1,8 @@
-import React, { useLayoutEffect, useState } from 'react';
-import { View, Text, Image, Pressable, ScrollView, Alert } from 'react-native';
+import React, { useLayoutEffect } from 'react';
+import { View, Text, Image, Pressable, ScrollView } from 'react-native';
 import tw from 'twrnc';
 import { useNavigation } from '@react-navigation/native';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import * as ImagePicker from 'expo-image-picker';
+import { useRouter } from 'expo-router';
 
 import { useTheme } from '@/context/ThemeContext';
 import { useUserStore } from '@/stores/userStore';
@@ -11,8 +10,8 @@ import { useUserStore } from '@/stores/userStore';
 const ContactUserInfo = () => {
   const navigation = useNavigation();
   const { colors } = useTheme();
-  const { user, setUser } = useUserStore();
-  const [selectedImage, setSelectedImage] = useState(user.avatar);
+  const { user } = useUserStore();
+  const router = useRouter();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -31,51 +30,25 @@ const ContactUserInfo = () => {
     });
   }, [navigation, colors]);
 
-  const pickImage = async () => {
-    // 请求访问图片库的权限
-    const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-    console.log(permissionResult);
-
-    if (permissionResult.granted === false) {
-      Alert.alert('Permission to access camera roll is required!');
-
-      return;
-    }
-
-    const pickerResult = await ImagePicker.launchImageLibraryAsync({
-      allowsEditing: true,
-      aspect: [1, 1],
-      quality: 1,
-    });
-
-    console.log(pickerResult);
-
-    if (!pickerResult.canceled) {
-      setSelectedImage(pickerResult.assets[0].uri);
-      setUser({ ...user, avatar: pickerResult.assets[0].uri });
-    }
-  };
-
   const menuItems = [
-    { label: '头像', value: selectedImage, type: 'image', onPress: pickImage },
+    { label: '头像', value: user.avatar, type: 'image', style: 'rounded-full' },
+    { label: '背景图片', value: user.backgroundImage, type: 'image' },
     { label: '名字', value: user.username || '未设置' },
-    { label: '拍一拍', value: '点击头像' },
     { label: '邮箱号', value: user.email || '未设置' },
-    { label: '二维码名片', value: '', icon: 'qr-code' },
-    { label: '更多信息', value: '' },
-    { label: '来电铃声', value: '' },
-    { label: '微信豆', value: '' },
-    { label: '我的地址', value: '' },
+    { label: '地区', value: user.region || '未设置' },
+    { label: '个性签名', value: user.signature || '未设置' },
   ];
+
+  const handleEditProfile = () => {
+    router.push('/profile/update');
+  };
 
   return (
     <ScrollView style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       <View style={tw`p-4`}>
         {menuItems.map((item, index) => (
-          <Pressable
+          <View
             key={index}
-            onPress={item.onPress}
             style={tw`flex-row justify-between items-center p-4 border-b border-gray-800`}
           >
             <Text style={[tw`text-base`, { color: colors.text }]}>{item.label}</Text>
@@ -87,24 +60,33 @@ const ContactUserInfo = () => {
                       item.value ||
                       'https://cdn.pixabay.com/photo/2024/07/17/08/53/sunrise-8901014_1280.jpg',
                   }}
-                  style={tw`w-12 h-12 rounded-full`}
+                  style={[
+                    tw`w-16 h-16`, // 缩小图片尺寸
+                    item.style === 'rounded-full' ? tw`rounded-full` : tw``,
+                  ]}
                 />
               ) : (
                 <Text style={[tw`text-base`, { color: colors.placeholder }]}>{item.value}</Text>
               )}
-              {item.icon ? (
-                <Ionicons name={item.icon} size={20} color={colors.placeholder} style={tw`ml-2`} />
-              ) : null}
-              <Ionicons
-                name="chevron-forward"
-                size={20}
-                color={colors.placeholder}
-                style={tw`ml-2`}
-              />
             </View>
-          </Pressable>
+          </View>
         ))}
       </View>
+
+      {/* 修改用户信息的按钮 */}
+      <Pressable
+        onPress={handleEditProfile}
+        style={[
+          tw`p-4 m-4 rounded bg-blue-500`,
+          {
+            backgroundColor: colors.primary,
+            alignItems: 'center',
+            justifyContent: 'center',
+          },
+        ]}
+      >
+        <Text style={[tw`text-white text-lg`, { color: colors.primaryText }]}>修改用户信息</Text>
+      </Pressable>
     </ScrollView>
   );
 };

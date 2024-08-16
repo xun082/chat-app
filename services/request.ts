@@ -35,7 +35,7 @@ class Request {
    */
   async interceptorsRequest({ url, method, params, cacheTime, mode }: Props) {
     let queryParams = ''; // url参数
-    let requestPayload = ''; // 请求体数据
+    let requestPayload: any = null; // 请求体数据
 
     // 请求头
     const headers: Record<string, string> = {};
@@ -61,6 +61,9 @@ class Request {
         queryParams = new URLSearchParams(params).toString();
         url = `${url}?${queryParams}`;
       }
+    } else if (params instanceof FormData) {
+      // 处理文件上传的情况，FormData 自动设置 Content-Type
+      requestPayload = params;
     } else {
       // 非 form-data 传输 JSON 数据格式
       if (
@@ -151,6 +154,10 @@ class Request {
 
   patch<T>(url: string, params?: Params, mode?: RequestMode): Promise<T> {
     return this.request('PATCH', url, params, mode);
+  }
+
+  upload<T>(url: string, formData: FormData, mode?: RequestMode): Promise<T> {
+    return this.request('POST', url, { params: formData }, mode);
   }
 }
 

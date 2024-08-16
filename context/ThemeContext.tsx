@@ -1,4 +1,3 @@
-// ThemeContext.tsx
 import React, { createContext, useState, useContext, useEffect, ReactNode } from 'react';
 import { useColorScheme as useDeviceColorScheme } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -11,18 +10,29 @@ import {
 import { lightColors, darkColors } from '@/utils/index';
 import { LocalStorageEnum } from '@/utils';
 
+interface ThemeColors {
+  background: string;
+  text: string;
+  border: string;
+  inputBackground: string;
+  inputText: string;
+  placeholder: string;
+  primary: string; // 添加的类型
+  primaryText: string; // 添加的类型
+  secondary: string; // 添加的类型
+  secondaryText: string; // 添加的类型
+  accent: string; // 添加的类型
+  accentText: string; // 添加的类型
+  success: string; // 添加的类型
+  warning: string; // 添加的类型
+  error: string; // 添加的类型
+}
+
 interface ThemeContextType {
   isDarkMode: boolean;
   toggleTheme: () => void;
   theme: typeof NavigationDarkTheme | typeof NavigationDefaultTheme;
-  colors: {
-    background: string;
-    text: string;
-    border: string;
-    inputBackground: string;
-    inputText: string;
-    placeholder: string;
-  };
+  colors: ThemeColors;
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined);
@@ -64,7 +74,7 @@ export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   };
 
   const theme = isDarkMode ? NavigationDarkTheme : NavigationDefaultTheme;
-  const colors = isDarkMode ? darkColors : lightColors;
+  const colors: ThemeColors = isDarkMode ? darkColors : lightColors;
 
   return (
     <ThemeContext.Provider value={{ isDarkMode, toggleTheme, theme, colors }}>
