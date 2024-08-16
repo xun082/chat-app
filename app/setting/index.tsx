@@ -1,30 +1,33 @@
 import React from 'react';
-import { SafeAreaView, View, Text, Switch, TouchableOpacity } from 'react-native';
+import { SafeAreaView, View, Text, Switch, Pressable } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import tw from 'twrnc';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useRouter } from 'expo-router';
 
 import { useTheme } from '@/context/ThemeContext';
 
 const SettingsPage: React.FC = () => {
   const { isDarkMode, toggleTheme, colors } = useTheme();
   const navigation = useNavigation();
+  const router = useRouter();
 
   React.useLayoutEffect(() => {
     navigation.setOptions({
       headerLeft: () => (
-        <TouchableOpacity onPress={() => navigation.goBack()} style={tw`pl-4`}>
+        <Pressable onPress={() => navigation.goBack()} style={tw`pl-4`}>
           <Text style={[tw`text-lg`, { color: colors.text }]}>返回</Text>
-        </TouchableOpacity>
+        </Pressable>
       ),
       headerTitle: () => (
         <View style={tw`flex-1 items-center justify-center`}>
-          <Text style={[tw`text-lg`, { color: colors.text }]}>深色模式</Text>
+          <Text style={[tw`text-lg`, { color: colors.text }]}>设置</Text>
         </View>
       ),
       headerRight: () => (
-        <TouchableOpacity onPress={() => navigation.goBack()} style={tw`pr-4`}>
+        <Pressable onPress={() => navigation.goBack()} style={tw`pr-4`}>
           <Text style={[tw`text-lg`, { color: colors.text }]}>完成</Text>
-        </TouchableOpacity>
+        </Pressable>
       ),
       headerStyle: {
         backgroundColor: colors.background,
@@ -35,17 +38,35 @@ const SettingsPage: React.FC = () => {
     });
   }, [navigation, colors]);
 
+  const handleLogout = async () => {
+    await AsyncStorage.clear();
+
+    router.push('/login');
+  };
+
   return (
     <SafeAreaView style={[tw`flex-1`, { backgroundColor: colors.background }]}>
       <View style={tw`p-4`}>
         <View style={tw`flex-row justify-between items-center mb-4`}>
-          <Text style={[tw`text-lg`, { color: colors.text }]}>跟随系统</Text>
+          <Text style={[tw`text-lg`, { color: colors.text }]}>暗黑模式</Text>
           <Switch value={isDarkMode} onValueChange={toggleTheme} />
         </View>
-        <Text style={[tw`text-sm`, { color: colors.text }]}>
-          启用后，将跟随系统打开或关闭深色模式
-        </Text>
       </View>
+
+      {/* 添加退出登录按钮 */}
+      <Pressable
+        onPress={handleLogout}
+        style={[
+          tw`p-4 mt-6 rounded-lg mx-4`,
+          {
+            backgroundColor: 'red', // 退出登录按钮为红色
+            alignItems: 'center',
+            justifyContent: 'center',
+          },
+        ]}
+      >
+        <Text style={tw`text-lg font-semibold text-white`}>退出登录</Text>
+      </Pressable>
     </SafeAreaView>
   );
 };

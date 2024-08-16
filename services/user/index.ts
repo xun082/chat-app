@@ -15,6 +15,7 @@ export interface UserResponseTypes {
   username: string; // 用户名
   _id: string; // 用户的唯一标识符（数据库中的ID）
   __v: number; // 数据库版本号
+  isFriend: boolean;
 }
 
 export interface Friend {
@@ -25,6 +26,14 @@ export interface Friend {
   friendRemark: string;
   friendUsername: string;
   id: string;
+}
+
+export interface UpdateUserDto {
+  username?: string;
+  region?: string;
+  signature?: string;
+  avatar?: string;
+  backgroundImage?: string;
 }
 
 export const searchUserByEmail = async (
@@ -47,4 +56,14 @@ export const getUserInfo = async (userId?: string): Promise<ApiResponse<UserResp
 
 export const getFriendsList = async (): Promise<ApiResponse<Array<Friend>>> => {
   return handleRequest(() => request.get<ApiResponse<Array<Friend>>>('/user/friends'));
+};
+
+export const updateUserInfo = async (
+  data: UpdateUserDto,
+): Promise<ApiResponse<UserResponseTypes>> => {
+  return handleRequest(() =>
+    request.patch<ApiResponse<UserResponseTypes>>('/user/update', {
+      params: { ...data },
+    }),
+  );
 };

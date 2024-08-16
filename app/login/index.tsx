@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useLayoutEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, TextInput, Pressable, Alert } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import tw from 'twrnc';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -106,13 +106,13 @@ const Page: React.FC = () => {
           value={email}
           onChangeText={setEmail}
         />
-        <TouchableOpacity
+        <Pressable
           style={[tw`p-3 rounded-r-lg`, isCounting ? tw`bg-gray-500` : tw`bg-indigo-500`]}
           onPress={sendVerificationCode}
           disabled={isCounting}
         >
           <Text style={tw`text-white`}>{isCounting ? `${timer}s后重发` : '发送验证码'}</Text>
-        </TouchableOpacity>
+        </Pressable>
       </View>
       <TextInput
         style={tw`w-full p-3 mb-4 bg-gray-700 text-white rounded-lg`}
@@ -122,9 +122,9 @@ const Page: React.FC = () => {
         value={verificationCode}
         onChangeText={setVerificationCode}
       />
-      <TouchableOpacity style={tw`w-full p-3 bg-green-500 rounded-lg shadow-lg`} onPress={login}>
+      <Pressable style={tw`w-full p-3 bg-green-500 rounded-lg shadow-lg`} onPress={login}>
         <Text style={tw`text-center text-white text-lg`}>登录</Text>
-      </TouchableOpacity>
+      </Pressable>
     </View>
   );
 };

@@ -41,6 +41,9 @@ const ContactUserInfo = () => {
       async function fetchUserInfo() {
         try {
           const data = await getUserInfo(id as string);
+
+          console.log(data.data);
+
           setUser(data.data);
         } catch (error) {
           console.error('获取用户信息失败:', error);
@@ -76,7 +79,7 @@ const ContactUserInfo = () => {
           <Text style={[tw`text-sm`, { color: colors.placeholder }]}>
             群昵称: {user.username || 'Genie Timer'}
           </Text>
-          <Text style={[tw`text-sm`, { color: colors.placeholder }]}>地区: {'未知'}</Text>
+          <Text style={[tw`text-sm`, { color: colors.placeholder }]}>地区: {user.region}</Text>
         </View>
       </View>
 
@@ -86,26 +89,50 @@ const ContactUserInfo = () => {
 
       <View style={[tw`p-4 border-t border-b`, { borderColor: colors.border }]}>
         <Text style={[tw`text-gray-400`, { color: colors.placeholder }]}>个性签名</Text>
-        <Text style={[tw`text-white`, { color: colors.text }]}>{'暂无签名'}</Text>
+        <Text style={[tw`text-white`, { color: colors.text }]}>{user.signature || '暂无签名'}</Text>
       </View>
 
       <Pressable style={[tw`p-4 border-t border-b`, { borderColor: colors.border }]}>
         <Text style={[tw`text-white`, { color: colors.text }]}>朋友圈</Text>
       </Pressable>
 
-      <Pressable style={[tw`p-4 border-t border-b`, { borderColor: colors.border }]}>
-        <Text style={[tw`text-white`, { color: colors.text }]}>视频号: {}</Text>
-      </Pressable>
-
-      <Link
-        href={{
-          pathname: '/(home)/reply/[id]',
-          params: { id: id as string },
-        }}
-        style={[tw`p-4 mt-4 items-center`, { backgroundColor: colors.inputBackground }]}
-      >
-        <Text style={[tw`text-blue-400`, { color: colors.text }]}>添加到通讯录</Text>
-      </Link>
+      {user.isFriend ? (
+        <Pressable
+          style={[
+            tw`py-4 mt-6 items-center w-full`, // 使用 py-4 仅保留上下内边距，w-full 使按钮宽度占满容器
+            {
+              backgroundColor: colors.primary,
+              shadowColor: '#000',
+              shadowOpacity: 0.2,
+              shadowOffset: { width: 0, height: 2 },
+              shadowRadius: 2,
+              borderRadius: 0, // 完全去除圆角
+            },
+          ]}
+        >
+          <Text style={[tw`text-white text-lg`, { color: colors.primaryText }]}>发送信息</Text>
+        </Pressable>
+      ) : (
+        <Link
+          href={{
+            pathname: '/(home)/reply/[id]',
+            params: { id: id as string },
+          }}
+          style={[
+            tw`py-4 mt-6 items-center w-full`, // 使用 py-4 仅保留上下内边距，w-full 使按钮宽度占满容器
+            {
+              backgroundColor: colors.primary,
+              shadowColor: '#000',
+              shadowOpacity: 0.2,
+              shadowOffset: { width: 0, height: 2 },
+              shadowRadius: 2,
+              borderRadius: 0, // 完全去除圆角
+            },
+          ]}
+        >
+          <Text style={[tw`text-white text-lg`, { color: colors.primaryText }]}>添加到通讯录</Text>
+        </Link>
+      )}
     </View>
   );
 };
