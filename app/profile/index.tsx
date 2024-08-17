@@ -3,6 +3,7 @@ import { View, Text, Image, Pressable, ScrollView } from 'react-native';
 import tw from 'twrnc';
 import { useNavigation } from '@react-navigation/native';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 import { useTheme } from '@/context/ThemeContext';
 import { useUserStore } from '@/stores/userStore';
@@ -17,7 +18,7 @@ const ContactUserInfo = () => {
     navigation.setOptions({
       headerTitle: () => (
         <View style={tw`flex-1 items-center justify-center`}>
-          <Text style={[tw`text-lg`, { color: colors.text }]}>个人信息</Text>
+          <Text style={[tw`text-lg font-bold`, { color: colors.text }]}>个人信息</Text>
         </View>
       ),
       headerStyle: {
@@ -49,9 +50,19 @@ const ContactUserInfo = () => {
         {menuItems.map((item, index) => (
           <View
             key={index}
-            style={tw`flex-row justify-between items-center p-4 border-b border-gray-800`}
+            style={[
+              tw`flex-row justify-between items-center p-4 mb-3 rounded-lg`,
+              {
+                backgroundColor: colors.card,
+                shadowColor: colors.shadowColor || '#000',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.3,
+                shadowRadius: 4,
+                elevation: 5, // 适用于安卓的阴影
+              },
+            ]}
           >
-            <Text style={[tw`text-base`, { color: colors.text }]}>{item.label}</Text>
+            <Text style={[tw`text-base font-medium`, { color: colors.text }]}>{item.label}</Text>
             <View style={tw`flex-row items-center`}>
               {item.type === 'image' ? (
                 <Image
@@ -61,13 +72,19 @@ const ContactUserInfo = () => {
                       'https://cdn.pixabay.com/photo/2024/07/17/08/53/sunrise-8901014_1280.jpg',
                   }}
                   style={[
-                    tw`w-16 h-16`, // 缩小图片尺寸
+                    tw`w-12 h-12`, // 调整图片尺寸
                     item.style === 'rounded-full' ? tw`rounded-full` : tw``,
                   ]}
                 />
               ) : (
                 <Text style={[tw`text-base`, { color: colors.placeholder }]}>{item.value}</Text>
               )}
+              <Ionicons
+                name="chevron-forward"
+                size={20}
+                color={colors.placeholder}
+                style={tw`ml-2`}
+              />
             </View>
           </View>
         ))}
@@ -77,15 +94,20 @@ const ContactUserInfo = () => {
       <Pressable
         onPress={handleEditProfile}
         style={[
-          tw`p-4 m-4 rounded bg-blue-500`,
+          tw`p-4 m-4 rounded-lg`,
           {
             backgroundColor: colors.primary,
             alignItems: 'center',
             justifyContent: 'center',
+            shadowColor: colors.shadowColor || '#000',
+            shadowOffset: { width: 0, height: 4 },
+            shadowOpacity: 0.4,
+            shadowRadius: 6,
+            elevation: 5,
           },
         ]}
       >
-        <Text style={[tw`text-white text-lg`, { color: colors.primaryText }]}>修改用户信息</Text>
+        <Text style={[tw`text-lg font-semibold`, { color: colors.primaryText }]}>修改用户信息</Text>
       </Pressable>
     </ScrollView>
   );

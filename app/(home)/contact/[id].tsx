@@ -21,7 +21,7 @@ const ContactUserInfo = () => {
     navigation.setOptions({
       headerTitle: () => (
         <View style={tw`flex-1 items-center justify-center`}>
-          <Text style={[tw`text-lg`, { color: colors.text }]}>用户信息</Text>
+          <Text style={[tw`text-lg font-semibold`, { color: colors.text }]}>用户信息</Text>
         </View>
       ),
       headerStyle: {
@@ -35,8 +35,6 @@ const ContactUserInfo = () => {
   }, [navigation, colors]);
 
   useEffect(() => {
-    // 如果从搜索跳转，则直接使用 searchResult，不需要发起请求
-    // 如果从用户列表跳转，则 searchResult 为空，需要发起网络请求
     if (!searchResult && id) {
       async function fetchUserInfo() {
         try {
@@ -62,20 +60,36 @@ const ContactUserInfo = () => {
       <View
         style={[tw`flex-1 justify-center items-center`, { backgroundColor: colors.background }]}
       >
-        <Text style={[tw`text-white`, { color: colors.text }]}>用户信息未找到</Text>
+        <Text style={[tw`text-lg`, { color: colors.text }]}>用户信息未找到</Text>
       </View>
     );
   }
 
   return (
-    <View style={[tw`flex-1`, { backgroundColor: colors.background }]}>
-      <View style={tw`flex-row p-4 items-center`}>
+    <View style={[tw`flex-1 p-4`, { backgroundColor: colors.background }]}>
+      <View
+        style={[
+          tw`flex-row items-center p-4 rounded-lg shadow-lg mb-4`,
+          {
+            backgroundColor: colors.card,
+            borderColor: colors.border,
+            borderWidth: 1,
+            shadowColor: colors.shadowColor,
+            shadowOpacity: 0.1,
+            shadowOffset: { width: 0, height: 2 },
+            shadowRadius: 8,
+            elevation: 5,
+          },
+        ]}
+      >
         <Image
           source={{ uri: user.avatar || 'https://example.com/avatar.jpg' }}
-          style={tw`w-16 h-16 rounded-full`}
+          style={tw`w-20 h-20 rounded-full border-2 border-gray-300`}
         />
-        <View style={tw`ml-4`}>
-          <Text style={[tw`text-xl font-bold`, { color: colors.text }]}>{user.username}</Text>
+        <View style={tw`ml-4 flex-1`}>
+          <Text style={[tw`text-xl font-semibold mb-1`, { color: colors.text }]}>
+            {user.username}
+          </Text>
           <Text style={[tw`text-sm`, { color: colors.placeholder }]}>
             群昵称: {user.username || 'Genie Timer'}
           </Text>
@@ -83,34 +97,49 @@ const ContactUserInfo = () => {
         </View>
       </View>
 
-      <Pressable style={[tw`p-4 border-t border-b`, { borderColor: colors.border }]}>
-        <Text style={[tw`text-white`, { color: colors.text }]}>设置备注和标签</Text>
+      <Pressable
+        style={[
+          tw`p-4 rounded-lg shadow-lg mb-4`,
+          { backgroundColor: colors.card, borderColor: colors.border, borderWidth: 1 },
+        ]}
+      >
+        <Text style={[tw`text-base font-medium`, { color: colors.text }]}>设置备注和标签</Text>
       </Pressable>
 
-      <View style={[tw`p-4 border-t border-b`, { borderColor: colors.border }]}>
-        <Text style={[tw`text-gray-400`, { color: colors.placeholder }]}>个性签名</Text>
-        <Text style={[tw`text-white`, { color: colors.text }]}>{user.signature || '暂无签名'}</Text>
+      <View
+        style={[
+          tw`p-4 rounded-lg shadow-lg mb-4`,
+          { backgroundColor: colors.card, borderColor: colors.border, borderWidth: 1 },
+        ]}
+      >
+        <Text style={[tw`text-sm mb-2`, { color: colors.placeholder }]}>个性签名</Text>
+        <Text style={[tw`text-base`, { color: colors.text }]}>{user.signature || '暂无签名'}</Text>
       </View>
 
-      <Pressable style={[tw`p-4 border-t border-b`, { borderColor: colors.border }]}>
-        <Text style={[tw`text-white`, { color: colors.text }]}>朋友圈</Text>
+      <Pressable
+        style={[
+          tw`p-4 rounded-lg shadow-lg mb-4`,
+          { backgroundColor: colors.card, borderColor: colors.border, borderWidth: 1 },
+        ]}
+      >
+        <Text style={[tw`text-base font-medium`, { color: colors.text }]}>朋友圈</Text>
       </Pressable>
 
       {user.isFriend ? (
         <Pressable
           style={[
-            tw`py-4 mt-6 items-center w-full`, // 使用 py-4 仅保留上下内边距，w-full 使按钮宽度占满容器
+            tw`py-4 mt-6 items-center rounded-lg`,
             {
               backgroundColor: colors.primary,
               shadowColor: '#000',
               shadowOpacity: 0.2,
               shadowOffset: { width: 0, height: 2 },
               shadowRadius: 2,
-              borderRadius: 0, // 完全去除圆角
+              elevation: 5,
             },
           ]}
         >
-          <Text style={[tw`text-white text-lg`, { color: colors.primaryText }]}>发送信息</Text>
+          <Text style={[tw`text-lg font-semibold`, { color: colors.primaryText }]}>发送信息</Text>
         </Pressable>
       ) : (
         <Link
@@ -119,18 +148,20 @@ const ContactUserInfo = () => {
             params: { id: id as string },
           }}
           style={[
-            tw`py-4 mt-6 items-center w-full`, // 使用 py-4 仅保留上下内边距，w-full 使按钮宽度占满容器
+            tw`py-4 mt-6 items-center rounded-lg`,
             {
               backgroundColor: colors.primary,
               shadowColor: '#000',
               shadowOpacity: 0.2,
               shadowOffset: { width: 0, height: 2 },
               shadowRadius: 2,
-              borderRadius: 0, // 完全去除圆角
+              elevation: 5,
             },
           ]}
         >
-          <Text style={[tw`text-white text-lg`, { color: colors.primaryText }]}>添加到通讯录</Text>
+          <Text style={[tw`text-lg font-semibold`, { color: colors.primaryText }]}>
+            添加到通讯录
+          </Text>
         </Link>
       )}
     </View>

@@ -14,6 +14,8 @@ export const lightColors = {
   success: '#4caf50', // 成功状态的颜色（如表单提交成功）
   warning: '#ff9800', // 警告状态的颜色（如表单验证错误）
   error: '#f44336', // 错误状态的颜色（如请求失败）
+  card: '#ffffff', // 卡片背景颜色
+  shadowColor: '#000000',
 };
 
 export const darkColors = {
@@ -23,13 +25,15 @@ export const darkColors = {
   inputBackground: '#222222',
   inputText: '#ffffff',
   placeholder: '#888888',
-  primary: '#1e90ff', // 主要按钮或链接颜色
-  primaryText: '#ffffff', // 主要按钮的文字颜色
-  secondary: '#444444', // 次要按钮或背景块的颜色
-  secondaryText: '#ffffff', // 次要按钮或块的文字颜色
-  accent: '#ff4081', // 用于强调的颜色
-  accentText: '#ffffff', // 强调元素的文字颜色
-  success: '#4caf50', // 成功状态的颜色
-  warning: '#ff9800', // 警告状态的颜色
-  error: '#f44336', // 错误状态的颜色
+  primary: '#1e90ff',
+  primaryText: '#ffffff',
+  secondary: '#444444',
+  secondaryText: '#ffffff',
+  accent: '#ff4081',
+  accentText: '#ffffff',
+  success: '#4caf50',
+  warning: '#ff9800',
+  error: '#f44336',
+  card: '#121212',
+  shadowColor: '#333333',
 };

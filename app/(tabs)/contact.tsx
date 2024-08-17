@@ -20,7 +20,7 @@ export default function ContactsScreen() {
     navigation.setOptions({
       headerTitle: () => (
         <View style={tw`flex-1 items-center justify-center`}>
-          <Text style={[tw`text-lg`, { color: colors.text }]}>通讯录</Text>
+          <Text style={[tw`text-lg font-bold`, { color: colors.text }]}>通讯录</Text>
         </View>
       ),
       headerRight: () => (
@@ -54,57 +54,98 @@ export default function ContactsScreen() {
   return (
     <ScrollView style={{ backgroundColor: colors.background }}>
       <View style={tw`p-4`}>
-        <View
+        <Pressable
           style={[
-            tw`flex-row items-center p-4 rounded mb-2`,
-            { backgroundColor: colors.inputBackground },
+            tw`flex-row items-center p-4 rounded mb-4`,
+            {
+              backgroundColor: colors.card,
+              shadowColor: colors.shadowColor || '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.1,
+              shadowRadius: 4,
+              elevation: 2,
+            },
           ]}
         >
-          <Ionicons name="person-add" size={24} color={colors.text} />
-          <Text style={[tw`ml-4`, { color: colors.text }]}>新的朋友</Text>
-        </View>
-        <View
+          <Ionicons name="person-add" size={24} color={colors.primary} />
+          <Text style={[tw`ml-4 text-base font-semibold`, { color: colors.text }]}>新的朋友</Text>
+        </Pressable>
+
+        <Pressable
           style={[
-            tw`flex-row items-center p-4 rounded mb-2`,
-            { backgroundColor: colors.inputBackground },
+            tw`flex-row items-center p-4 rounded mb-4`,
+            {
+              backgroundColor: colors.card,
+              shadowColor: colors.shadowColor || '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.1,
+              shadowRadius: 4,
+              elevation: 2,
+            },
           ]}
         >
-          <Ionicons name="people" size={24} color={colors.text} />
-          <Text style={[tw`ml-4`, { color: colors.text }]}>群聊</Text>
-        </View>
-        <View
+          <Ionicons name="people" size={24} color={colors.primary} />
+          <Text style={[tw`ml-4 text-base font-semibold`, { color: colors.text }]}>群聊</Text>
+        </Pressable>
+
+        <Pressable
           style={[
-            tw`flex-row items-center p-4 rounded mb-2`,
-            { backgroundColor: colors.inputBackground },
+            tw`flex-row items-center p-4 rounded mb-4`,
+            {
+              backgroundColor: colors.card,
+              shadowColor: colors.shadowColor || '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.1,
+              shadowRadius: 4,
+              elevation: 2,
+            },
           ]}
         >
-          <Ionicons name="pricetag" size={24} color={colors.text} />
-          <Text style={[tw`ml-4`, { color: colors.text }]}>标签</Text>
-        </View>
-        <View
+          <Ionicons name="pricetag" size={24} color={colors.primary} />
+          <Text style={[tw`ml-4 text-base font-semibold`, { color: colors.text }]}>标签</Text>
+        </Pressable>
+
+        <Pressable
           style={[
-            tw`flex-row items-center p-4 rounded mb-2`,
-            { backgroundColor: colors.inputBackground },
+            tw`flex-row items-center p-4 rounded mb-4`,
+            {
+              backgroundColor: colors.card,
+              shadowColor: colors.shadowColor || '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.1,
+              shadowRadius: 4,
+              elevation: 2,
+            },
           ]}
         >
-          <Ionicons name="person" size={24} color={colors.text} />
-          <Text style={[tw`ml-4`, { color: colors.text }]}>公众号</Text>
-        </View>
-        <View
+          <Ionicons name="person" size={24} color={colors.primary} />
+          <Text style={[tw`ml-4 text-base font-semibold`, { color: colors.text }]}>公众号</Text>
+        </Pressable>
+
+        <Pressable
           style={[
-            tw`flex-row items-center p-4 rounded mb-2`,
-            { backgroundColor: colors.inputBackground },
+            tw`flex-row items-center p-4 rounded mb-4`,
+            {
+              backgroundColor: colors.card,
+              shadowColor: colors.shadowColor || '#000',
+              shadowOffset: { width: 0, height: 2 },
+              shadowOpacity: 0.1,
+              shadowRadius: 4,
+              elevation: 2,
+            },
           ]}
         >
-          <Ionicons name="chatbubble-ellipses" size={24} color={colors.text} />
-          <Text style={[tw`ml-4`, { color: colors.text }]}>企业微信联系人</Text>
-        </View>
+          <Ionicons name="chatbubble-ellipses" size={24} color={colors.primary} />
+          <Text style={[tw`ml-4 text-base font-semibold`, { color: colors.text }]}>
+            企业微信联系人
+          </Text>
+        </Pressable>
       </View>
 
       <View style={tw`p-4`}>
         {friends.map((friend, index) => (
           <View key={index}>
-            <Text style={[tw`mb-2`, { color: colors.placeholder }]}>
+            <Text style={[tw`mb-2 text-sm`, { color: colors.placeholder }]}>
               {friend.friendUsername.charAt(0).toUpperCase()}
             </Text>
             <Pressable
@@ -114,17 +155,22 @@ export default function ContactsScreen() {
                   params: { id: friend.friendId },
                 })
               }
-              style={tw`w-full`}
+              style={[
+                tw`flex-row items-center p-4 rounded mb-4`,
+                {
+                  backgroundColor: colors.card,
+                  shadowColor: colors.shadowColor || '#000',
+                  shadowOffset: { width: 0, height: 2 },
+                  shadowOpacity: 0.1,
+                  shadowRadius: 4,
+                  elevation: 2,
+                },
+              ]}
             >
-              <View
-                style={[
-                  tw`flex-row items-center p-4 rounded mb-2`,
-                  { backgroundColor: colors.inputBackground },
-                ]}
-              >
-                <Image source={{ uri: friend.avatar }} style={tw`w-10 h-10 rounded-full`} />
-                <Text style={[tw`ml-4`, { color: colors.text }]}>{friend.friendRemark}</Text>
-              </View>
+              <Image source={{ uri: friend.avatar }} style={tw`w-10 h-10 rounded-full`} />
+              <Text style={[tw`ml-4 text-base font-semibold`, { color: colors.text }]}>
+                {friend.friendRemark}
+              </Text>
             </Pressable>
           </View>
         ))}

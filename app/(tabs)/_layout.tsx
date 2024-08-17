@@ -1,7 +1,11 @@
 import { Tabs } from 'expo-router';
 import React from 'react';
+import { View, Text } from 'react-native';
+import tw from 'twrnc';
 
 import { TabBarIcon } from '@/components/navigation/TabBarIcon';
+
+const unreadMessagesCount = 5; // 示例：假设未读消息数量为 5
 
 export default function TabLayout() {
   return (
@@ -13,9 +17,21 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
+          title: '聊天',
           headerShown: true,
           tabBarIcon: ({ color, focused }) => (
-            <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+            <View style={tw`relative`}>
+              <TabBarIcon name={focused ? 'home' : 'home-outline'} color={color} />
+              {unreadMessagesCount > 0 && (
+                <View
+                  style={tw`absolute top-[-3px] right-[-10px] min-w-[18px] h-[18px] bg-red-600 rounded-full justify-center items-center border border-white`}
+                >
+                  <Text style={tw`text-white text-xs font-bold`}>
+                    {unreadMessagesCount > 99 ? '99+' : unreadMessagesCount}
+                  </Text>
+                </View>
+              )}
+            </View>
           ),
         }}
       />
@@ -41,7 +57,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="user"
         options={{
-          title: 'User',
+          title: '我',
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'person' : 'person-outline'} color={color} />
           ),
