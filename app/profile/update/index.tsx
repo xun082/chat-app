@@ -10,6 +10,47 @@ import { useTheme } from '@/context/ThemeContext';
 import { useUserStore } from '@/stores/userStore';
 import { UpdateUserDto, updateUserInfo, uploadSingleFile } from '@/services';
 
+const FormInput = ({ label, placeholder, control, name, colors, secureTextEntry = false }: any) => (
+  <Controller
+    control={control}
+    render={({ field: { onChange, onBlur, value } }) => (
+      <View style={tw`mb-5`}>
+        <Text style={[tw`mb-2 text-base font-medium`, { color: colors.text }]}>{label}</Text>
+        <TextInput
+          style={[
+            tw`p-3 border rounded-lg shadow-sm`,
+            {
+              borderColor: colors.border,
+              color: colors.text,
+              backgroundColor: colors.inputBackground,
+            },
+          ]}
+          placeholder={placeholder}
+          placeholderTextColor={colors.placeholder}
+          onBlur={onBlur}
+          onChangeText={onChange}
+          value={value || ''}
+          secureTextEntry={secureTextEntry}
+        />
+      </View>
+    )}
+    name={name}
+  />
+);
+
+const ImagePickerField = ({ label, value, onPickImage, colors, style, uploading }: any) => (
+  <View style={tw`mb-5`}>
+    <Text style={[tw`mb-2 text-base font-medium`, { color: colors.text }]}>{label}</Text>
+    <Pressable onPress={onPickImage} style={tw`mb-3`}>
+      <Image
+        source={{ uri: value || 'https://placeholder.url/default-avatar.png' }}
+        style={tw`${style} rounded-lg border-2 border-gray-300 shadow-sm`}
+      />
+      {uploading && <Text style={[tw`text-sm mt-2`, { color: colors.text }]}>上传中...</Text>}
+    </Pressable>
+  </View>
+);
+
 const UpdateUserProfileForm: React.FC = () => {
   const { colors } = useTheme();
   const { user } = useUserStore();
@@ -28,25 +69,19 @@ const UpdateUserProfileForm: React.FC = () => {
 
   const onSubmit = async (data: UpdateUserDto) => {
     try {
-      const response = await updateUserInfo(data);
-      console.log('User info updated successfully:', response);
-
+      await updateUserInfo(data);
       router.push('/user');
     } catch (error) {
       console.error('Failed to update user info:', error);
-      // 在这里处理失败后的逻辑，例如显示错误提示
+      // 处理错误逻辑
     }
-  };
-
-  const getFileNameFromUri = (uri: string): string => {
-    return uri.split('/').pop() || 'default-filename.jpg';
   };
 
   const pickImage = async (field: keyof UpdateUserDto) => {
     const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
 
-    if (permissionResult.granted === false) {
-      Alert.alert('Permission to access camera roll is required!');
+    if (!permissionResult.granted) {
+      Alert.alert('需要访问相册权限！');
 
       return;
     }
@@ -60,18 +95,19 @@ const UpdateUserProfileForm: React.FC = () => {
     if (!pickerResult.canceled) {
       setUploading(true);
 
-      const fileName = getFileNameFromUri(pickerResult.assets[0].uri);
+      try {
+        const response = await fetch(pickerResult.assets[0].uri);
+        const blob = await response.blob();
+        const file = new File([blob], `image-${Date.now()}`, { type: blob.type });
 
-      const response = await fetch(pickerResult.assets[0].uri);
-      const blob = await response.blob();
+        const data = await uploadSingleFile(file);
 
-      const file = new File([blob], fileName, { type: blob.type });
-
-      const data = await uploadSingleFile(file, 'moment', fileName);
-
-      setValue(field, data.data.url);
-
-      setUploading(false);
+        setValue(field, data.data.url);
+      } catch (error) {
+        console.error('上传图片失败', error);
+      } finally {
+        setUploading(false);
+      }
     }
   };
 
@@ -94,117 +130,46 @@ const UpdateUserProfileForm: React.FC = () => {
 
   return (
     <View style={[tw`flex-1 p-6`, { backgroundColor: colors.background }]}>
-      <Controller
+      <FormInput
+        label="用户名"
+        placeholder="请输入用户名"
         control={control}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <View style={tw`mb-5`}>
-            <Text style={[tw`mb-2 text-base font-medium`, { color: colors.text }]}>用户名</Text>
-            <TextInput
-              style={[
-                tw`p-3 border rounded-lg shadow-sm`,
-                {
-                  borderColor: colors.border,
-                  color: colors.text,
-                  backgroundColor: colors.inputBackground,
-                },
-              ]}
-              placeholder="请输入用户名"
-              placeholderTextColor={colors.placeholder}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value || ''}
-            />
-          </View>
-        )}
         name="username"
+        colors={colors}
       />
 
-      <Controller
+      <FormInput
+        label="地区"
+        placeholder="请输入所在地区"
         control={control}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <View style={tw`mb-5`}>
-            <Text style={[tw`mb-2 text-base font-medium`, { color: colors.text }]}>地区</Text>
-            <TextInput
-              style={[
-                tw`p-3 border rounded-lg shadow-sm`,
-                {
-                  borderColor: colors.border,
-                  color: colors.text,
-                  backgroundColor: colors.inputBackground,
-                },
-              ]}
-              placeholder="请输入所在地区"
-              placeholderTextColor={colors.placeholder}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value || ''}
-            />
-          </View>
-        )}
         name="region"
+        colors={colors}
       />
 
-      <Controller
+      <FormInput
+        label="个性签名"
+        placeholder="请输入个性签名"
         control={control}
-        render={({ field: { onChange, onBlur, value } }) => (
-          <View style={tw`mb-5`}>
-            <Text style={[tw`mb-2 text-base font-medium`, { color: colors.text }]}>个性签名</Text>
-            <TextInput
-              style={[
-                tw`p-3 border rounded-lg shadow-sm`,
-                {
-                  borderColor: colors.border,
-                  color: colors.text,
-                  backgroundColor: colors.inputBackground,
-                },
-              ]}
-              placeholder="请输入个性签名"
-              placeholderTextColor={colors.placeholder}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value || ''}
-            />
-          </View>
-        )}
         name="signature"
+        colors={colors}
       />
 
-      <Controller
-        control={control}
-        render={({ field: { value } }) => (
-          <View style={tw`mb-5`}>
-            <Text style={[tw`mb-2 text-base font-medium`, { color: colors.text }]}>头像</Text>
-            <Pressable onPress={() => pickImage('avatar')} style={tw`mb-3`}>
-              <Image
-                source={{ uri: value || 'https://placeholder.url/default-avatar.png' }}
-                style={tw`w-24 h-24 rounded-full border-2 border-gray-300 shadow-sm`}
-              />
-              {uploading && (
-                <Text style={[tw`text-sm mt-2`, { color: colors.text }]}>上传中...</Text>
-              )}
-            </Pressable>
-          </View>
-        )}
-        name="avatar"
+      <ImagePickerField
+        label="头像"
+        value={control._formValues.avatar}
+        onPickImage={() => pickImage('avatar')}
+        colors={colors}
+        style="w-24 h-24 rounded-full"
+        uploading={uploading}
       />
 
-      <Controller
-        control={control}
-        render={({ field: { value } }) => (
-          <View style={tw`mb-5`}>
-            <Text style={[tw`mb-2 text-base font-medium`, { color: colors.text }]}>背景图片</Text>
-            <Pressable onPress={() => pickImage('backgroundImage')} style={tw`mb-3`}>
-              <Image
-                source={{ uri: value || 'https://placeholder.url/default-background.png' }}
-                style={tw`w-full h-48 rounded-lg border-2 border-gray-300 shadow-sm`}
-              />
-              {uploading && (
-                <Text style={[tw`text-sm mt-2`, { color: colors.text }]}>上传中...</Text>
-              )}
-            </Pressable>
-          </View>
-        )}
-        name="backgroundImage"
+      <ImagePickerField
+        label="背景图片"
+        value={control._formValues.backgroundImage}
+        onPickImage={() => pickImage('backgroundImage')}
+        colors={colors}
+        style="w-full h-48"
+        uploading={uploading}
       />
 
       <Pressable
