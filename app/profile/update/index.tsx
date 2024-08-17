@@ -14,11 +14,11 @@ const FormInput = ({ label, placeholder, control, name, colors, secureTextEntry 
   <Controller
     control={control}
     render={({ field: { onChange, onBlur, value } }) => (
-      <View style={tw`mb-5`}>
-        <Text style={[tw`mb-2 text-base font-medium`, { color: colors.text }]}>{label}</Text>
+      <View style={tw`mb-6`}>
+        <Text style={[tw`mb-2 text-sm font-medium`, { color: colors.text }]}>{label}</Text>
         <TextInput
           style={[
-            tw`p-3 border rounded-lg shadow-sm`,
+            tw`p-3 border rounded-lg`,
             {
               borderColor: colors.border,
               color: colors.text,
@@ -42,10 +42,25 @@ const ImagePickerField = ({ label, value, onPickImage, colors, style, uploading 
   <View style={tw`mb-5`}>
     <Text style={[tw`mb-2 text-base font-medium`, { color: colors.text }]}>{label}</Text>
     <Pressable onPress={onPickImage} style={tw`mb-3`}>
-      <Image
-        source={{ uri: value || 'https://placeholder.url/default-avatar.png' }}
-        style={tw`${style} rounded-lg border-2 border-gray-300 shadow-sm`}
-      />
+      <View
+        style={[
+          tw`${style} rounded-lg`,
+          {
+            borderColor: colors.border,
+            backgroundColor: colors.inputBackground,
+            shadowColor: '#000',
+            shadowOffset: { width: 0, height: 2 },
+            shadowOpacity: 0.1,
+            shadowRadius: 4,
+            elevation: 2, // 将 elevation 应用于 View，而不是 Image
+          },
+        ]}
+      >
+        <Image
+          source={{ uri: value || 'https://placeholder.url/default-avatar.png' }}
+          style={tw`w-full h-full rounded-lg`} // 将圆角样式应用于图片
+        />
+      </View>
       {uploading && <Text style={[tw`text-sm mt-2`, { color: colors.text }]}>上传中...</Text>}
     </Pressable>
   </View>
@@ -101,7 +116,6 @@ const UpdateUserProfileForm: React.FC = () => {
         const file = new File([blob], `image-${Date.now()}`, { type: blob.type });
 
         const data = await uploadSingleFile(file);
-
         setValue(field, data.data.url);
       } catch (error) {
         console.error('上传图片失败', error);
@@ -115,7 +129,7 @@ const UpdateUserProfileForm: React.FC = () => {
     navigation.setOptions({
       headerTitle: () => (
         <View style={tw`flex-1 items-center justify-center`}>
-          <Text style={[tw`text-lg font-semibold`, { color: colors.text }]}>个人信息</Text>
+          <Text style={[tw`text-lg font-semibold`, { color: colors.text }]}>修改个人信息</Text>
         </View>
       ),
       headerStyle: {
@@ -159,7 +173,7 @@ const UpdateUserProfileForm: React.FC = () => {
         value={control._formValues.avatar}
         onPickImage={() => pickImage('avatar')}
         colors={colors}
-        style="w-24 h-24 rounded-full"
+        style="w-24 h-24"
         uploading={uploading}
       />
 
@@ -175,19 +189,19 @@ const UpdateUserProfileForm: React.FC = () => {
       <Pressable
         onPress={handleSubmit(onSubmit)}
         style={[
-          tw`p-4 mt-6 rounded-lg`,
+          tw`p-4 mt-8 rounded-lg`,
           {
             backgroundColor: colors.primary,
             alignItems: 'center',
             justifyContent: 'center',
             shadowOpacity: 0.3,
             shadowRadius: 10,
+            shadowColor: '#000',
+            elevation: 3,
           },
         ]}
       >
-        <Text style={[tw`text-white text-lg font-semibold`, { color: colors.primaryText }]}>
-          保存修改
-        </Text>
+        <Text style={[tw`text-lg font-semibold`, { color: colors.primaryText }]}>保存修改</Text>
       </Pressable>
     </View>
   );

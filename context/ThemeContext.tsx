@@ -26,6 +26,8 @@ interface ThemeColors {
   success: string; // 添加的类型
   warning: string; // 添加的类型
   error: string; // 添加的类型
+  card: string;
+  shadowColor: string;
 }
 
 interface ThemeContextType {
