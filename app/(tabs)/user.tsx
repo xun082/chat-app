@@ -3,6 +3,7 @@ import { SafeAreaView, View, Text, Pressable, Image, ScrollView } from 'react-na
 import { useRouter, Link } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
+import IconTitleCell from '@/components/cell/iconTitleCell';
 import tw from '@/tailwind';
 import { useTheme } from '@/context/ThemeContext';
 import { getUserInfo } from '@/services';
@@ -83,34 +84,29 @@ const MainPage: React.FC = () => {
   const router = useRouter();
 
   return (
-    <SafeAreaView style={[tw`flex-1`, { backgroundColor: colors.background }]}>
+    <SafeAreaView style={[tw`flex-1`, { backgroundColor: colors.cellBackGround }]}>
       <ScrollView>
         <ProfileHeader />
-        <View style={tw`mt-4`}>
-          <MenuItem title="服务" />
-          <MenuItem title="收藏" />
-          <MenuItem title="朋友圈" />
-          <MenuItem title="视频号" />
-          <MenuItem title="订单与卡包" />
-          <MenuItem title="表情" />
-          <MenuItem title="设置" onPress={() => router.push('/setting')} />
+        <View style={tw`mt-2`}>
+          <IconTitleCell iconName="checkbox-outline" title="服务" onPress={() => {}} />
+        </View>
+        <View style={tw`mt-2`}>
+          <IconTitleCell iconName="cube-outline" title="收藏" onPress={() => {}} />
+          <IconTitleCell iconName="aperture-outline" title="朋友圈" onPress={() => {}} />
+          <IconTitleCell iconName="card-outline" title="订单与卡包" onPress={() => {}} />
+          <IconTitleCell iconName="happy-outline" title="表情" onPress={() => {}} />
+        </View>
+        <View style={tw`mt-2`}>
+          <IconTitleCell
+            iconName="settings-outline"
+            title="设置"
+            onPress={() => router.push('/setting')}
+          />
         </View>
       </ScrollView>
-      <Pressable
-        style={[
-          tw`m-4 p-4 rounded-full items-center shadow-lg`,
-          {
-            backgroundColor: colors.primary,
-            shadowColor: colors.shadowColor,
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.3,
-            shadowRadius: 4,
-          },
-        ]}
-        onPress={toggleTheme}
-      >
-        <Text style={[tw`text-lg font-semibold`, { color: colors.primaryText }]}>切换主题</Text>
-      </Pressable>
+      <View style={tw`mb-4`}>
+        <IconTitleCell hideRightArrow={true} title="切换主题" onPress={toggleTheme} />
+      </View>
     </SafeAreaView>
   );
 };
