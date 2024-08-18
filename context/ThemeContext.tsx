@@ -11,6 +11,8 @@ import { lightColors, darkColors } from '@/utils/index';
 import { LocalStorageEnum } from '@/utils';
 
 interface ThemeColors {
+  cellColor: string;
+  cellBackGround: string;
   background: string;
   text: string;
   border: string;

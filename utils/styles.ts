@@ -1,5 +1,7 @@
 export const lightColors = {
   background: '#ffffff',
+  cellColor: '#ffffff',
+  cellBackGround: '#f2f2f2',
   text: '#000000',
   border: '#e0e0e0',
   inputBackground: '#f0f0f0',
@@ -20,6 +22,8 @@ export const lightColors = {
 
 export const darkColors = {
   background: '#000000',
+  cellColor: '#191919',
+  cellBackGround: '#000',
   text: '#ffffff',
   border: '#333333',
   inputBackground: '#222222',
