@@ -3,12 +3,14 @@ import { View, Text, Pressable, Image, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import tw from 'twrnc';
+import { useRouter } from 'expo-router';
 
 import { useTheme } from '@/context/ThemeContext';
 
 const DiscoverScreen = () => {
   const navigation = useNavigation();
   const { colors } = useTheme();
+  const router = useRouter();
 
   useLayoutEffect(() => {
     navigation.setOptions({
@@ -47,7 +49,9 @@ const DiscoverScreen = () => {
             borderBottomWidth: 1,
           },
         ]}
-        onPress={() => alert('Moments pressed')}
+        onPress={() => {
+          router.push('/posts');
+        }}
       >
         <Image
           source={{ uri: 'https://cdn.pixabay.com/photo/2024/07/15/16/09/bird-8897237_1280.jpg' }} // 朋友圈图标的URL

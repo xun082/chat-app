@@ -1,5 +1,5 @@
 import React, { useEffect } from 'react';
-import { SafeAreaView, View, Text, Pressable, Image, ScrollView } from 'react-native';
+import { SafeAreaView, View, Text, Image, ScrollView } from 'react-native';
 import { useRouter, Link } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 
@@ -51,31 +51,6 @@ const ProfileHeader: React.FC = () => {
         <Ionicons name="chevron-forward" size={24} color={colors.placeholder} />
       </View>
     </Link>
-  );
-};
-
-const MenuItem: React.FC<{ title: string; onPress?: () => void }> = ({ title, onPress }) => {
-  const { colors } = useTheme();
-
-  return (
-    <Pressable onPress={onPress}>
-      <View
-        style={[
-          tw`flex flex-row items-center p-4 my-2 mx-4 rounded-lg shadow-sm`,
-          {
-            backgroundColor: colors.card,
-            borderColor: colors.border,
-            shadowColor: colors.shadowColor,
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.2,
-            shadowRadius: 3,
-          },
-        ]}
-      >
-        <Text style={[tw`text-lg font-medium flex-1`, { color: colors.text }]}>{title}</Text>
-        <Ionicons name="chevron-forward" size={20} color={colors.placeholder} />
-      </View>
-    </Pressable>
   );
 };
 
