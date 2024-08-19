@@ -49,6 +49,7 @@ export default function TabLayout() {
         name="discover"
         options={{
           title: '发现',
+          headerShown: true,
           tabBarIcon: ({ color, focused }) => (
             <TabBarIcon name={focused ? 'compass' : 'compass-outline'} color={color} />
           ),
