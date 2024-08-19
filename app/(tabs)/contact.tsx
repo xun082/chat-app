@@ -45,6 +45,7 @@ export default function ContactsScreen() {
   useEffect(() => {
     async function loadFriends() {
       const data = await getFriendsList();
+
       setFriends(data.data);
     }
 
@@ -143,37 +144,38 @@ export default function ContactsScreen() {
       </View>
 
       <View style={tw`p-4`}>
-        {friends.map((friend, index) => (
-          <View key={index}>
-            <Text style={[tw`mb-2 text-sm`, { color: colors.placeholder }]}>
-              {friend.friendUsername.charAt(0).toUpperCase()}
-            </Text>
-            <Pressable
-              onPress={() =>
-                router.push({
-                  pathname: '/(home)/contact/[id]',
-                  params: { id: friend.friendId },
-                })
-              }
-              style={[
-                tw`flex-row items-center p-4 rounded mb-4`,
-                {
-                  backgroundColor: colors.card,
-                  shadowColor: colors.shadowColor || '#000',
-                  shadowOffset: { width: 0, height: 2 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 4,
-                  elevation: 2,
-                },
-              ]}
-            >
-              <Image source={{ uri: friend.avatar }} style={tw`w-10 h-10 rounded-full`} />
-              <Text style={[tw`ml-4 text-base font-semibold`, { color: colors.text }]}>
-                {friend.friendRemark}
+        {friends &&
+          friends.map((friend, index) => (
+            <View key={index}>
+              <Text style={[tw`mb-2 text-sm`, { color: colors.placeholder }]}>
+                {friend.friendUsername.charAt(0).toUpperCase()}
               </Text>
-            </Pressable>
-          </View>
-        ))}
+              <Pressable
+                onPress={() =>
+                  router.push({
+                    pathname: '/(home)/contact/[id]',
+                    params: { id: friend.friendId },
+                  })
+                }
+                style={[
+                  tw`flex-row items-center p-4 rounded mb-4`,
+                  {
+                    backgroundColor: colors.card,
+                    shadowColor: colors.shadowColor || '#000',
+                    shadowOffset: { width: 0, height: 2 },
+                    shadowOpacity: 0.1,
+                    shadowRadius: 4,
+                    elevation: 2,
+                  },
+                ]}
+              >
+                <Image source={{ uri: friend.avatar }} style={tw`w-10 h-10 rounded-full`} />
+                <Text style={[tw`ml-4 text-base font-semibold`, { color: colors.text }]}>
+                  {friend.friendRemark}
+                </Text>
+              </Pressable>
+            </View>
+          ))}
       </View>
       <DropdownMenu visible={menuVisible} onClose={() => setMenuVisible(false)} />
     </ScrollView>
