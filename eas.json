@@ -1,0 +1,19 @@
+{
+  "cli": {
+    "version": ">= 10.2.4"
+  },
+  "build": {
+    "development": {
+      "developmentClient": true,
+      "distribution": "internal"
+    },
+    "preview": {
+      "distribution": "internal",
+      "env": {}
+    },
+    "production": {}
+  },
+  "submit": {
+    "production": {}
+  }
+}
